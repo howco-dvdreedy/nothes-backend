@@ -9,10 +9,10 @@ const getApprovers = async (): Promise<Approver[]> => {
   const sqlQueryForApprover = `SELECT Distinct
 		--PA.popauth_id
 		PA.popauth_iportuserid
-				, PU.iPortUserid  
+				, PU.iPortUserId  
 				, PU.[Login]  
-				, PU.Firstname  
-				, PU.Lastname
+				, PU.FirstName  
+				, PU.LastName
 	FROM dbo.popauth PA
 		INNER JOIN [v410howco_iport_live].dbo.iPortUser PU
 		ON PU.iportuserid = PA.popauth_iportuserid
@@ -20,9 +20,15 @@ const getApprovers = async (): Promise<Approver[]> => {
 	--AND PA.popauth_iportuserid = 1780;	
 	ORDER BY PU.Firstname, PU.Lastname;	
 		`;
-		return await connection.query<Approver>(
+		const approvers =  await connection.query<Approver>(
 			sqlQueryForApprover
 		);
+		approvers.forEach((approver) => {
+			approver.FirstName = approver.FirstName.trim();
+			approver.LastName = approver.LastName.trim();
+			approver.Login = approver.Login.trim();
+		});
+		return approvers;
 };
 
 export default getApprovers;

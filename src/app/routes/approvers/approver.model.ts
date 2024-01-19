@@ -1,6 +1,6 @@
 export interface Approver {
   IPortUserId: number;
   Login: string;
-  Firstname: string;
-  Lastname: string;
+  FirstName: string;
+  LastName: string;
 }
