@@ -1,3 +1,4 @@
+import HttpException from '../../models/http-exception.model';
 import { SearchRequest, SearchResult } from './search.model';
 import odbc from 'odbc';
 
@@ -22,18 +23,20 @@ const getApprovers = async (
     ['popitem_description', searchRequest.itemDescription],
   ] as Iterable<readonly [string, string | undefined]>);
 
-  const allValuesUndefined = Array.from(paramsMap.values()).every(value => value === undefined);
+  const allValuesUndefined = Array.from(paramsMap.values()).every(
+    (value) => value === undefined
+  );
   if (allValuesUndefined) {
-    throw new Error('At least one parameter required');
+    throw new HttpException(400, 'At least one parameter required');
   }
 
-  let query = `EXEC ${storedProcedureName}`;
-  for (const [key, value] of paramsMap) {
-    if (value) {
-      query += ` @${key} = '${value}'`;
-    }
-  }
-  
+  const queryParams = Array.from(paramsMap)
+    .filter(([_, value]) => value !== undefined)
+    .map(([key, value]) => `@${key} = '${value}'`)
+    .join(', ');
+
+  const query = `EXEC ${storedProcedureName} ${queryParams}`;
+
   const searchResults = await connection.query(query);
   return searchResults;
 };
