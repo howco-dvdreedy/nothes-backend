@@ -1,6 +1,6 @@
 export interface SearchRequest {
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   requisitionNumber: number;
   requisitionStatus: number;
   businessUnit: string;

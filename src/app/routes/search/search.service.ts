@@ -36,6 +36,7 @@ const getApprovers = async (
     .join(', ');
 
   const query = `EXEC ${storedProcedureName} ${queryParams}`;
+  console.log(query);
 
   const searchResults = await connection.query(query);
   return searchResults;
