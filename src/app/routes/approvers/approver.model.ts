@@ -3,4 +3,5 @@ export interface Approver {
   Login: string;
   FirstName: string;
   LastName: string;
+  popauth_iportuserid: number;
 }

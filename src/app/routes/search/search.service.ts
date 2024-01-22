@@ -1,6 +1,9 @@
 import HttpException from '../../models/http-exception.model';
 import { SearchRequest, SearchResult } from './search.model';
 import odbc from 'odbc';
+import cache from 'memory-cache';
+import { CACHE_KEYS } from '../../constants/cacheKeys';
+import { Approver } from '../approvers/approver.model';
 
 const getApprovers = async (
   searchRequest: SearchRequest
@@ -30,15 +33,24 @@ const getApprovers = async (
     throw new HttpException(400, 'At least one parameter required');
   }
 
+  const cachedApprovers = cache.get<Approver[]>(CACHE_KEYS.APPROVERS);
+  const approverMap = new Map<number, string>(
+    cachedApprovers.map((approver: Approver) => [approver.popauth_iportuserid, approver.FirstName + ' ' + approver.LastName]),
+  );
   const queryParams = Array.from(paramsMap)
     .filter(([_, value]) => value !== undefined)
     .map(([key, value]) => `@${key} = '${value}'`)
     .join(', ');
 
   const query = `EXEC ${storedProcedureName} ${queryParams}`;
-  console.log(query);
 
-  const searchResults = await connection.query(query);
+  const searchResults = await connection.query<SearchResult>(query);
+  searchResults.forEach((searchResult) => {
+    searchResult.approver_name = approverMap.get(
+      searchResult.pophead_approver
+    );
+  });
+
   return searchResults;
 };
 
