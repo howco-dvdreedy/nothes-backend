@@ -13,8 +13,8 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const itemID = req.params.id;
-      const item = await getItem(itemID);
-      res.json({ item });
+      const items = await getItem(itemID);
+      res.json({ items });
     } catch (error) {
       next(error);
     }
