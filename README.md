@@ -1,13 +1,3 @@
-# ![Node/Express/Prisma Example App](project-logo.png)
-
-[![Build Status](https://travis-ci.org/anishkny/node-express-realworld-example-app.svg?branch=master)](https://travis-ci.org/anishkny/node-express-realworld-example-app)
-
-> ### Example Node (Express + Prisma) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
-
-<a href="https://thinkster.io/tutorials/node-json-api" target="_blank"><img width="454" src="https://raw.githubusercontent.com/gothinkster/realworld/master/media/learn-btn-hr.png" /></a>
-
-## Getting Started
-
 ### Prerequisites
 
 Run the following command to install dependencies:
@@ -25,25 +15,8 @@ Your host provider should included a feature to set them there directly to avoid
 Here are the required ones:
 
 ```
-DATABASE_URL=
-JWT_SECRET=
-NODE_ENV=production
-```
-
-### Generate your Prisma client
-
-Run the following command to generate the Prisma Client which will include types based on your database schema:
-
-```shell
-npx prisma generate
-```
-
-### Apply any SQL migration script
-
-Run the following command to create/update your database based on existing sql migration scripts:
-
-```shell
-npx prisma migrate deploy
+DB_USER
+DB_PASSWORD
 ```
 
 ### Run the project
@@ -54,21 +27,19 @@ Run the following command to run the project:
 npx nx serve api
 ```
 
-### Seed the database
 
-The project includes a seed script to populate the database:
+## Deplpyment methods
 
-```shell
-npx prisma db seed
-```
+Api is currently running on windows server s-us-web02
+To deploy new version
+remote to s-us-web05
+pm2 stop nothes
+replace the dist folder in the nothes backend located in C/www/nothes
+pm2 start ecosystem.config.js --env production 
 
-## Deploy on a remote server
+to test
+curl localhost:3000/api/approvers 
+curl http://10.5.20.96/nothes/api/approvers
 
-Run the following command to:
-- install dependencies
-- apply any new migration sql scripts
-- run the server
-
-```shell
-npm ci && npx prisma migrate deploy && node dist/api/main.js
-```
+## logs
+logs can be found in programdata/pm2/logs
